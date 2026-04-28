@@ -1,0 +1,115 @@
+Build a production ready reading tracker web app, not a demo or mockup.
+
+The app must be fully functional end to end with real data persistence. When I sign in and add books, reading sessions, goals, notes, ratings, and progress, all data must save correctly to the database and load again after refresh, logout, and login. Do not use fake data, placeholder state, temporary memory storage, local only demo logic, or sample seeded content unless it is clearly optional and disabled by default.
+
+Core requirement:
+This must feel like an out of the box usable product, not a prototype. Every main feature should actually work.
+
+Tech requirements:
+Use a real backend and real database integration in Replit.
+Use proper authentication with persistent user accounts.
+Each signed in user must only see their own data.
+Use database writes and reads for all tracked content.
+Handle loading states, empty states, and error states cleanly.
+Make sure data is actually pushed and persisted after sign in.
+Do not leave anything in demo mode.
+
+Main features:
+
+1. User authentication
+   Allow sign up, sign in, sign out, and persistent sessions.
+   Use secure auth that works in Replit.
+   After login, the user should be taken to their dashboard.
+
+2. Reading dashboard
+   Show:
+   Current books being read
+   Books completed
+   Books planned to read
+   Total books finished
+   Total pages read
+   Reading streak
+   Reading goal progress
+   Recent reading sessions
+
+3. Book management
+   Users can:
+   Add a book manually
+   Edit a book
+   Delete a book
+   Mark status as Want to Read, Reading, Completed, Paused, or Dropped
+   Store title, author, total pages, genre, format, start date, finish date, cover image URL, rating, review, notes
+
+4. Reading progress tracking
+   Users can:
+   Update current page
+   Log reading sessions
+   Store session date, pages read, minutes read, notes
+   Automatically calculate percent complete
+   Automatically move a book to completed when current page reaches total pages
+   Save all progress to the database immediately
+
+5. Goals and stats
+   Users can:
+   Set yearly reading goal by books
+   Optionally set pages goal
+   Track progress visually with charts or progress bars
+   Show useful stats like:
+   Books completed this year
+   Pages read this month
+   Average rating
+   Average pages per day
+   Reading streak
+
+6. Search and filtering
+   Allow filtering by status, genre, author, and format
+   Allow sorting by recently updated, title, author, progress, and rating
+
+7. Notes and reviews
+   Each book should support personal notes and a review
+   These must persist in the database
+
+8. Responsive UI
+   The app should look polished and modern on desktop and mobile
+   Use a clean reading themed design
+   Make it feel like a real product someone would use daily
+
+Important architecture requirements:
+Use a proper schema for users, books, reading_sessions, goals, and notes if needed.
+Make sure all CRUD operations are connected to the database.
+Do not use temporary front end state as the source of truth.
+The database must be the source of truth.
+After any create, update, or delete action, the UI should refresh from real saved data.
+Include validation so invalid entries cannot break the app.
+
+Important anti demo requirements:
+No fake dashboard numbers
+No hardcoded sample books
+No mock auth
+No localStorage only persistence
+No placeholder save buttons that do nothing
+No UI only forms without backend wiring
+No “coming soon” for core features
+No pretend charts with static values
+
+Quality requirements:
+Write clean, maintainable code
+Organize frontend and backend clearly
+Include comments where helpful
+Make the project easy to run in Replit
+Add setup instructions in the README
+Include environment variable handling for secrets
+Use production minded error handling
+
+Final deliverable:
+A fully working reading tracker that I can run in Replit, sign into, add data, and trust that the data is actually saved and retrieved properly every time.
+
+Before finishing, verify:
+Signing in works
+Creating a book works
+Updating progress works
+Reading sessions save correctly
+Dashboard stats update from real data
+Refreshing the page does not lose data
+Logging out and back in keeps the user’s saved data
+Each user only sees their own records

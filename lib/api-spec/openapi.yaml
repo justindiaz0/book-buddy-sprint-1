@@ -1,0 +1,782 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: BookBuddy API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: users
+    description: User management
+  - name: books
+    description: Book management
+  - name: sessions
+    description: Reading sessions
+  - name: dashboard
+    description: Dashboard aggregates
+  - name: settings
+    description: User settings
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /users/me:
+    get:
+      operationId: getCurrentUser
+      tags: [users]
+      summary: Get current user profile
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: No user found (not onboarded)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+
+    put:
+      operationId: updateUser
+      tags: [users]
+      summary: Update user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserBody"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/onboard:
+    post:
+      operationId: onboardUser
+      tags: [users]
+      summary: Complete onboarding
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnboardUserBody"
+      responses:
+        "201":
+          description: Created user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /books:
+    get:
+      operationId: listBooks
+      tags: [books]
+      summary: List all books
+      responses:
+        "200":
+          description: List of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+
+    post:
+      operationId: createBook
+      tags: [books]
+      summary: Add a new book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookBody"
+      responses:
+        "201":
+          description: Created book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+
+  /books/{id}:
+    get:
+      operationId: getBook
+      tags: [books]
+      summary: Get a specific book
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Book details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+
+    put:
+      operationId: updateBook
+      tags: [books]
+      summary: Update a book
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBookBody"
+      responses:
+        "200":
+          description: Updated book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+
+  /books/{id}/complete:
+    post:
+      operationId: completeBook
+      tags: [books]
+      summary: Mark book as completed
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Completed book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+
+  /books/current:
+    get:
+      operationId: getCurrentBook
+      tags: [books]
+      summary: Get the currently active book
+      responses:
+        "200":
+          description: Current book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Book"
+        "404":
+          description: No current book
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundError"
+
+  /sessions:
+    get:
+      operationId: listSessions
+      tags: [sessions]
+      summary: List reading sessions
+      parameters:
+        - name: bookId
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Reading sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReadingSession"
+
+    post:
+      operationId: createSession
+      tags: [sessions]
+      summary: Log a reading session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionBody"
+      responses:
+        "201":
+          description: Logged session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadingSession"
+
+  /sessions/recent:
+    get:
+      operationId: getRecentSessions
+      tags: [sessions]
+      summary: Get recent sessions for dashboard
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 7
+      responses:
+        "200":
+          description: Recent sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReadingSession"
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary with streak, momentum, and progress
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/weekly:
+    get:
+      operationId: getWeeklySummary
+      tags: [dashboard]
+      summary: Get weekly activity breakdown
+      responses:
+        "200":
+          description: Weekly activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeeklySummary"
+
+  /dashboard/history:
+    get:
+      operationId: getReadingHistory
+      tags: [dashboard]
+      summary: Get reading history by date with sessions
+      parameters:
+        - name: month
+          in: query
+          schema:
+            type: string
+            description: "YYYY-MM format"
+      responses:
+        "200":
+          description: Reading history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReadingHistory"
+
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get user settings
+      responses:
+        "200":
+          description: User settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+
+    put:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update user settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSettingsBody"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    NotFoundError:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        displayName:
+          type: string
+        dailyGoalMinutes:
+          type: integer
+        reminderEnabled:
+          type: boolean
+        reminderTime:
+          type: string
+          nullable: true
+        burnoutWindowStart:
+          type: string
+          nullable: true
+        burnoutWindowEnd:
+          type: string
+          nullable: true
+        darkMode:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - displayName
+        - dailyGoalMinutes
+        - reminderEnabled
+        - darkMode
+        - createdAt
+
+    OnboardUserBody:
+      type: object
+      properties:
+        displayName:
+          type: string
+        bookTitle:
+          type: string
+        bookAuthor:
+          type: string
+          nullable: true
+        bookTotalPages:
+          type: integer
+        currentPage:
+          type: integer
+          default: 0
+        dailyGoalMinutes:
+          type: integer
+          default: 15
+        reminderEnabled:
+          type: boolean
+          default: false
+        reminderTime:
+          type: string
+          nullable: true
+        burnoutWindowStart:
+          type: string
+          nullable: true
+        burnoutWindowEnd:
+          type: string
+          nullable: true
+        darkMode:
+          type: boolean
+          default: true
+      required:
+        - displayName
+        - bookTitle
+        - bookTotalPages
+
+    UpdateUserBody:
+      type: object
+      properties:
+        displayName:
+          type: string
+        dailyGoalMinutes:
+          type: integer
+        reminderEnabled:
+          type: boolean
+        reminderTime:
+          type: string
+          nullable: true
+        burnoutWindowStart:
+          type: string
+          nullable: true
+        burnoutWindowEnd:
+          type: string
+          nullable: true
+        darkMode:
+          type: boolean
+
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        author:
+          type: string
+          nullable: true
+        totalPages:
+          type: integer
+        currentPage:
+          type: integer
+        percentComplete:
+          type: number
+        isCompleted:
+          type: boolean
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        lastReadAt:
+          type: string
+          format: date-time
+          nullable: true
+        totalSessions:
+          type: integer
+        isCurrent:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - totalPages
+        - currentPage
+        - percentComplete
+        - isCompleted
+        - totalSessions
+        - isCurrent
+        - createdAt
+
+    CreateBookBody:
+      type: object
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+          nullable: true
+        totalPages:
+          type: integer
+        currentPage:
+          type: integer
+          default: 0
+        setAsCurrent:
+          type: boolean
+          default: true
+      required:
+        - title
+        - totalPages
+
+    UpdateBookBody:
+      type: object
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+          nullable: true
+        totalPages:
+          type: integer
+        currentPage:
+          type: integer
+        isCurrent:
+          type: boolean
+
+    ReadingSession:
+      type: object
+      properties:
+        id:
+          type: integer
+        bookId:
+          type: integer
+        bookTitle:
+          type: string
+        pagesRead:
+          type: integer
+        minutesRead:
+          type: integer
+        startPage:
+          type: integer
+        endPage:
+          type: integer
+        sessionDate:
+          type: string
+          format: date
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - bookId
+        - bookTitle
+        - pagesRead
+        - minutesRead
+        - startPage
+        - endPage
+        - sessionDate
+        - createdAt
+
+    CreateSessionBody:
+      type: object
+      properties:
+        bookId:
+          type: integer
+        pagesRead:
+          type: integer
+        minutesRead:
+          type: integer
+        startPage:
+          type: integer
+        endPage:
+          type: integer
+        notes:
+          type: string
+          nullable: true
+      required:
+        - bookId
+        - pagesRead
+        - minutesRead
+        - startPage
+        - endPage
+
+    DashboardSummary:
+      type: object
+      properties:
+        currentStreak:
+          type: integer
+        longestStreak:
+          type: integer
+        weeklyActiveDays:
+          type: integer
+        weeklyGoalDays:
+          type: integer
+        momentumLabel:
+          type: string
+        totalPagesRead:
+          type: integer
+        totalMinutesRead:
+          type: integer
+        lastReadAt:
+          type: string
+          format: date-time
+          nullable: true
+        daysSinceLastRead:
+          type: integer
+          nullable: true
+        isRecovering:
+          type: boolean
+        currentBook:
+          $ref: "#/components/schemas/Book"
+          nullable: true
+        todayMinutesRead:
+          type: integer
+        todayPagesRead:
+          type: integer
+        todayGoalMet:
+          type: boolean
+        encouragementMessage:
+          type: string
+      required:
+        - currentStreak
+        - longestStreak
+        - weeklyActiveDays
+        - weeklyGoalDays
+        - momentumLabel
+        - totalPagesRead
+        - totalMinutesRead
+        - isRecovering
+        - todayMinutesRead
+        - todayPagesRead
+        - todayGoalMet
+        - encouragementMessage
+
+    WeeklySummary:
+      type: object
+      properties:
+        week:
+          type: array
+          items:
+            $ref: "#/components/schemas/DayActivity"
+        activeDays:
+          type: integer
+        totalPagesThisWeek:
+          type: integer
+        totalMinutesThisWeek:
+          type: integer
+      required:
+        - week
+        - activeDays
+        - totalPagesThisWeek
+        - totalMinutesThisWeek
+
+    DayActivity:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        dayLabel:
+          type: string
+        isActive:
+          type: boolean
+        isToday:
+          type: boolean
+        isFuture:
+          type: boolean
+        pagesRead:
+          type: integer
+        minutesRead:
+          type: integer
+      required:
+        - date
+        - dayLabel
+        - isActive
+        - isToday
+        - isFuture
+        - pagesRead
+        - minutesRead
+
+    ReadingHistory:
+      type: object
+      properties:
+        month:
+          type: string
+        activeDates:
+          type: array
+          items:
+            type: string
+            format: date
+        sessionsByDate:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: "#/components/schemas/ReadingSession"
+        monthlyStats:
+          $ref: "#/components/schemas/MonthlyStats"
+      required:
+        - month
+        - activeDates
+        - sessionsByDate
+        - monthlyStats
+
+    MonthlyStats:
+      type: object
+      properties:
+        totalSessions:
+          type: integer
+        totalPages:
+          type: integer
+        totalMinutes:
+          type: integer
+        activeDays:
+          type: integer
+      required:
+        - totalSessions
+        - totalPages
+        - totalMinutes
+        - activeDays
+
+    Settings:
+      type: object
+      properties:
+        userId:
+          type: integer
+        dailyGoalMinutes:
+          type: integer
+        reminderEnabled:
+          type: boolean
+        reminderTime:
+          type: string
+          nullable: true
+        burnoutWindowStart:
+          type: string
+          nullable: true
+        burnoutWindowEnd:
+          type: string
+          nullable: true
+        darkMode:
+          type: boolean
+      required:
+        - userId
+        - dailyGoalMinutes
+        - reminderEnabled
+        - darkMode
+
+    UpdateSettingsBody:
+      type: object
+      properties:
+        dailyGoalMinutes:
+          type: integer
+        reminderEnabled:
+          type: boolean
+        reminderTime:
+          type: string
+          nullable: true
+        burnoutWindowStart:
+          type: string
+          nullable: true
+        burnoutWindowEnd:
+          type: string
+          nullable: true
+        darkMode:
+          type: boolean

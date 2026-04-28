@@ -1,0 +1,464 @@
+Build a polished MVP web app called BookBuddy.
+
+You must use the uploaded project documents as the source of truth. Read all uploaded files before making product decisions. This includes the journey map, product description, persona, OKRs, user stories, sitemap, storyboard, wireframes, and usability test materials.
+
+This is not a generic reading tracker. It is a lightweight habit support product designed for mentally tired students who want to read for personal growth and enjoyment, but often default to scrolling and lose momentum after missed days.
+
+CORE PRODUCT IDEA
+
+BookBuddy helps college students build a consistent personal reading habit by making reading feel easy to start, emotionally rewarding, and forgiving over time.
+
+The product should:
+- reduce guilt from screen time
+- lower the friction of starting a reading session
+- make progress visible in a satisfying way
+- support momentum recovery after missed days
+- frame reading as a mental reset, not work
+
+The product should NOT feel like:
+- homework
+- a productivity punishment tool
+- a rigid self improvement tracker
+- a social reading app
+- an academic reading platform
+
+PRIMARY USER
+
+The user is a college student or early career reader who:
+- values reading for self improvement and enjoyment
+- is motivated enough to want the habit
+- struggles with consistency because of fatigue, distraction, and competing priorities
+- often tries to read at the end of the day after classes, work, or obligations
+- is vulnerable to doom scrolling when mentally drained
+- benefits from visible proof of progress
+- feels discouraged when they miss even one day
+- needs support that encourages restarting without shame
+
+EMOTIONAL TARGET
+
+The app should make the user feel:
+- relieved
+- grounded
+- capable
+- accomplished
+- encouraged to continue
+
+The app should avoid making the user feel:
+- behind
+- judged
+- guilty
+- pressured
+- like they failed because they missed one day
+
+PRODUCT PRINCIPLES
+
+1. Low friction above all
+Every important action should be fast and obvious.
+The user should be able to start a session in seconds.
+
+2. Recovery over perfection
+Missed days must not collapse the entire experience.
+The app should help users come back quickly.
+
+3. Progress must feel tangible
+Use visible cues for streaks, weekly consistency, completion percentage, reading history, and completed books.
+
+4. Reading should feel like a reset
+The language and experience should position reading as relief from overstimulation.
+
+5. Minimal but emotionally intelligent
+Do not overload the product with features.
+Make a few core things feel excellent.
+
+BUILD A REAL CLICKABLE MVP
+
+Use a modern stack that works well in Replit.
+Prioritize a full working prototype with real navigation, state, and persistence.
+Do not build static mock screens.
+Use local persistence or a lightweight database so data survives refreshes in the Replit environment.
+
+TECHNICAL PREFERENCE
+
+Use a clean modern web stack suitable for Replit such as:
+- Next.js or React with a clear component architecture
+- Tailwind for styling
+- a lightweight backend or server routes if needed
+- persistent storage using SQLite, Postgres, or another simple Replit friendly option
+
+If a simpler stack is better for speed and reliability in Replit, choose it.
+The result must still feel polished and production minded.
+
+INFORMATION ARCHITECTURE TO IMPLEMENT
+
+Main navigation should reflect the uploaded sitemap and product flows:
+- Home / Dashboard
+- Reading Session / Logger
+- Reading History / Timeline
+- Book Library or Current Book Details
+- Burnout Window / Reminder Settings
+- Profile / Goals or lightweight settings area
+- Completion Celebration state
+
+MVP SCREENS AND FLOWS
+
+1. ONBOARDING
+Build a short onboarding flow that can be completed in under one minute.
+
+Collect:
+- first name or display name
+- current book title
+- optional author
+- total pages in current book
+- preferred daily reading goal in minutes, default to 15
+- preferred reminder time
+- preferred “burnout window” time, meaning when they are most likely to default to scrolling
+- whether they want reminders enabled
+- whether dark mode is preferred
+
+Onboarding tone:
+- calm
+- supportive
+- simple
+- no corporate language
+- no pressure language
+
+2. HOME DASHBOARD
+This should be the emotional center of the app.
+
+Include:
+- current book section
+- clear primary CTA to start reading
+- today’s goal
+- gentle supportive microcopy
+- current momentum or current streak
+- weekly consistency summary
+- progress percentage for current book
+- quick access to recent history
+- a low energy option like “Just read 2 pages”
+- reminder or burnout window awareness if relevant
+
+The dashboard should help a tired user know exactly what to do next.
+
+3. READING SESSION / LOGGER
+This is the most important flow.
+It must be extremely easy to use.
+
+Include:
+- large visible timer
+- Start button as the primary action
+- pause and end session controls
+- ability to log pages read
+- ability to log minutes read
+- current page input
+- progress bar toward book completion
+- prefill the last saved page to reduce typing
+- optional low energy mode with a 2 page goal
+- ability to end early without penalty
+- explicit confirmation after a session is logged
+
+Important usability requirement:
+Previous testing suggested users were unsure whether a session had actually saved.
+So after ending a session, show clear confirmation such as:
+- a success toast
+- a saved state
+- a confirmation card
+- the immediate appearance of the session in history
+
+Do not rely on silent auto save without visible feedback.
+
+4. POST SESSION SUCCESS STATE
+After logging a session, show a positive reinforcement view.
+
+Include:
+- pages read
+- minutes read
+- progress on current book
+- encouraging message focused on follow through, not productivity
+- a clear next action such as back to dashboard or view history
+
+Good examples of tone:
+- You showed up today.
+- Nice work, you kept the habit alive.
+- Progress counts, even on low energy days.
+- You followed through.
+
+Avoid:
+- hustle language
+- optimization language
+- guilt based nudges
+
+5. READING HISTORY / TIMELINE
+Build a history screen that emphasizes visible accumulated effort.
+
+Include:
+- chronological list of sessions
+- date
+- book title
+- pages read
+- time read
+- selectable calendar or weekly view
+- active reading days per week
+- history grouped in a readable way
+- ability to inspect a specific day and see what was read
+- timeline or weekly consistency visualization
+
+Behavior:
+- tapping a date should clearly reveal or filter that day’s session details
+- avoid confusion between the calendar and the session list
+- make month navigation obvious
+- current streak and longest streak can be visible, but users should understand what happens when they tap them
+
+6. MOMENTUM / STREAK LOGIC
+Do not use a harsh all or nothing streak only model.
+
+Implement two ideas:
+A. traditional current streak and longest streak can exist
+B. also build a more forgiving weekly momentum metric based on consistency, not perfection
+
+Use product logic aligned with the documents:
+- allow a “5 out of 7 days” style consistency framing
+- allow short breaks without making the user feel reset to zero in spirit
+- if a day is missed, history remains intact
+- missing a day should not erase accumulated progress
+- rest days should be visually neutral, not failure coded
+
+Language examples:
+- 4 active days this week
+- Momentum: 5 of 7 days
+- Rest day
+- Ready to pick it back up?
+
+Avoid:
+- Missed
+- Failed
+- You broke your streak
+- Days since you last read
+
+7. RECOVERY UX
+This is one of the most important product behaviors.
+
+If the user misses a day:
+- do not shame them
+- do not frame them as behind
+- do not make the dashboard feel empty or punitive
+
+Instead:
+- welcome them back warmly
+- continue momentum framing
+- highlight that restarting still counts
+- encourage returning within 3 days
+- preserve progress
+- use neutral language for skipped days
+
+Build a recovery card or state that appears after a gap.
+Examples:
+- Ready to pick it back up?
+- A short session is enough to get back into it.
+- Even two pages keeps the habit moving.
+
+8. BOOK DETAILS / LIBRARY
+Support at least one current book well, with room for multiple books if easy to implement.
+
+Include:
+- book title
+- author
+- cover image placeholder if no real image exists
+- total pages
+- current page
+- percentage complete
+- total sessions logged
+- last read date
+- button to mark the book completed
+
+When a book is completed:
+- record completion permanently
+- trigger a completion celebration state
+- include completed books in history
+
+9. COMPLETION CELEBRATION
+When the user completes a book, make it feel meaningful but not cheesy.
+
+Include:
+- celebratory state or modal
+- confirmation that the book is complete
+- completed date
+- encouraging copy
+- clear action to return home or start another book
+
+This should feel like a satisfying milestone and identity reinforcement.
+
+10. SETTINGS
+Build a lightweight but functional settings screen.
+
+Include:
+- daily reminder on or off
+- reminder time
+- burnout window time
+- dark mode toggle
+- optional account reset or delete data action
+
+Reminders do not need to integrate with full push infrastructure if that is too complex, but structure the app so the setting exists and is persistable.
+If reminders are not actually sent in the MVP, be explicit in code comments and architecture notes about what is mocked versus what is implemented.
+
+DESIGN DIRECTION
+
+The uploaded wireframes suggest a dark, clean, minimal UI.
+Evolve that into a premium modern product.
+
+Design goals:
+- mobile first
+- calm, sleek, minimal
+- high contrast but soft enough for night use
+- rounded cards
+- clean typography
+- satisfying spacing
+- obvious hierarchy
+- not overly playful
+- not childish
+- no clutter
+
+Visual personality:
+- thoughtful
+- premium
+- emotionally calming
+- subtle confidence
+
+Do not build a generic bright gamified habit tracker.
+Do not make it look like a classroom assignment.
+Make it feel like a product someone would actually want to use at night when mentally tired.
+
+UX DETAILS TO GET RIGHT
+
+- The main CTA should always be obvious
+- Save confirmation after logging must be explicit
+- Calendar interactions must be clear
+- Month navigation must be obvious
+- If streak cards are tappable, their behavior should be obvious
+- The relationship between a selected day and the session list should be intuitive
+- Inputs should reduce effort by prefilling or remembering previous values
+- Dark mode should look intentional, not default browser dark
+
+COPY STYLE
+
+Use short, warm, supportive copy.
+Avoid sounding like a productivity coach.
+Avoid sounding like a school app.
+Avoid guilt, urgency, or performance pressure.
+
+Good tone:
+- calm
+- reassuring
+- human
+- concise
+- quietly motivating
+
+CONTENT / FEATURE CONSTRAINTS
+
+Do NOT include:
+- social features
+- friends
+- comments
+- leaderboards
+- academic reading tools
+- annotation systems
+- book club features
+- heavy analytics dashboards
+- noisy gamification
+- childish badges
+- pressure based streak punishments
+- deep AI features that distract from the core habit loop
+
+OPTIONAL NICE TO HAVE IF TIME ALLOWS
+
+Only add these if the core flows are already excellent:
+- rotating encouragement messages
+- lightweight habit insights
+- completed books archive
+- onboarding profile edit
+- subtle empty states
+- a weekly reflection card
+- smooth animations or transitions
+
+DATA MODEL
+
+Create a clean data model for at least:
+- users
+- books
+- reading_sessions
+- daily_activity or streak_state
+- settings
+- completion_events
+
+Suggested fields should support:
+- session timestamp
+- pages read
+- minutes read
+- current page after session
+- book completion percentage
+- active reading days per week
+- recovery within 3 days after a missed day
+- reminder preferences
+- burnout window preferences
+
+SEED DATA
+
+Include realistic seed data so the MVP is immediately demoable.
+Provide:
+- one current book in progress
+- several past reading sessions
+- at least one completed book if easy to support
+- a weekly pattern that shows both activity and a rest day
+
+IMPLEMENTATION QUALITY
+
+- use reusable components
+- keep code organized and readable
+- make the app fully navigable
+- make state updates immediate and visible
+- persist user data
+- avoid placeholder lorem ipsum
+- avoid unfinished dead ends
+- make every core screen functional
+
+IMPORTANT DECISION RULES
+
+When forced to choose between:
+- more features vs better emotional clarity
+choose better emotional clarity
+
+- more complexity vs lower friction
+choose lower friction
+
+- stronger streak punishment vs supportive recovery
+choose supportive recovery
+
+- generic productivity UI vs calm reading ritual feel
+choose calm reading ritual feel
+
+FINAL DELIVERABLE REQUIREMENTS
+
+When the build is complete, provide:
+1. a short summary of the app
+2. architecture overview
+3. database or persistence overview
+4. explanation of core user flows
+5. explanation of how the product decisions map to the uploaded documents
+6. list of what is fully implemented
+7. list of what is mocked or partially implemented
+8. suggested V2 roadmap
+
+V2 ROADMAP SHOULD FOCUS ON
+- reminders actually sent at burnout windows
+- richer book library
+- improved recovery personalization
+- more nuanced weekly momentum views
+- better completion history
+- exportable reading history
+- refined onboarding and habit coaching
+
+MOST IMPORTANT OUTCOME
+
+Build an MVP that makes a tired student think:
+“This feels easy to start.”
+“This doesn’t punish me for missing a day.”
+“I can actually become a consistent reader with this.”
